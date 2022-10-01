@@ -56,7 +56,7 @@ INCLUDE inc\onaip.inc
 				 "130", 0, \
 				 "140", 0, \
 				 "150", 0
- _c_nb_note byte "160", 0, \   ; ligne trop longue pour l'assembleur (trop complex ) , rajout d'un pseudo label inutilisé, la bonne blague :)
+ _c_nb_note byte "160", 0, \   ; ligne trop longue pour l'assembleur (trop complex ) , rajout d'un label inutilisé
 				 "170", 0, \
 				 "180", 0, \
 				 "190", 0, \
@@ -310,14 +310,6 @@ exercice_notes_dlg_init proc
  jnz @ajoute_nb_octaves
  ; **************************************************** 
  
- 
- ; configuration par défaut pour les débutants comme moi :)
- ; clef sol et fa, 1 portées, 20 notes, 1 octave, aucune altérations
- ;invoke SendMessage, endc.h_idlb_type_partition, CB_SETCURSEL, 0, NULL
- ;invoke SendMessage, endc.h_idlb_nb_portees, CB_SETCURSEL, 0, NULL
- ;invoke SendMessage, endc.h_idlb_nb_notes, CB_SETCURSEL, 1, NULL
- ;invoke SendMessage, endc.h_idlb_nb_octaves, CB_SETCURSEL, 0, NULL
- 
  ; MAJ niveau max par défaut :)
  ; clef sol et fa, 1 portées, 250 notes, 4 octaves, altérations bémol et dièse
  invoke SendMessage, endc.h_idlb_type_partition, CB_SETCURSEL, 0, NULL
@@ -535,20 +527,15 @@ exercice_notes_dlg_go proc
   
   .if endc.clef1 == CLEF_SOL
    mov endc.code_midi_min_clef_1, 3Ch
-   ;mov endc.touche_max_clef_1, 12
   .else
    mov endc.code_midi_min_clef_1, 30h
-   ;mov endc.touche_max_clef_1, 12
   .endif  
  
  
   .if endc.clef2 == CLEF_SOL
    mov endc.code_midi_min_clef_2, 3Ch
-   ;mov endc.touche_max_clef_2, 12
-  
   .elseif endc.clef2 == CLEF_FA
    mov endc.code_midi_min_clef_2, 30h
-   ;mov endc.touche_max_clef_2, 12
   .endif
  
  
@@ -559,20 +546,15 @@ exercice_notes_dlg_go proc
   
   .if endc.clef1 == CLEF_SOL
    mov endc.code_midi_min_clef_1, 3Ch
-   ;mov endc.touche_max_clef_1, 24
   .else
    mov endc.code_midi_min_clef_1, 24h
-   ;mov endc.touche_max_clef_1, 24
   .endif  
  
  
   .if endc.clef2 == CLEF_SOL
    mov endc.code_midi_min_clef_2, 3Ch
-   ;mov endc.touche_max_clef_2, 24
-  
   .elseif endc.clef2 == CLEF_FA
    mov endc.code_midi_min_clef_2, 24h
-   ;mov endc.touche_max_clef_2, 24
   .endif
  
  
@@ -583,20 +565,15 @@ exercice_notes_dlg_go proc
   
   .if endc.clef1 == CLEF_SOL
    mov endc.code_midi_min_clef_1, 3Ch
-   ;mov endc.touche_max_clef_1, 36
   .else
    mov endc.code_midi_min_clef_1, 18h
-   ;mov endc.touche_max_clef_1, 36
   .endif  
  
  
   .if endc.clef2 == CLEF_SOL
    mov endc.code_midi_min_clef_2, 3Ch
-   ;mov endc.touche_max_clef_2, 36
-  
   .elseif endc.clef2 == CLEF_FA
    mov endc.code_midi_min_clef_2, 18h
-   ;mov endc.touche_max_clef_2, 36
   .endif
  
  
@@ -607,20 +584,15 @@ exercice_notes_dlg_go proc
   
   .if endc.clef1 == CLEF_SOL
    mov endc.code_midi_min_clef_1, 30h
-   ;mov endc.touche_max_clef_1, 48
   .else
    mov endc.code_midi_min_clef_1, 18h
-   ;mov endc.touche_max_clef_1, 48
   .endif  
  
  
   .if endc.clef2 == CLEF_SOL
    mov endc.code_midi_min_clef_2, 30h
-   ;mov endc.touche_max_clef_2, 48
-  
   .elseif endc.clef2 == CLEF_FA
    mov endc.code_midi_min_clef_2, 18h
-   ;mov endc.touche_max_clef_2, 48
   .endif
  
  .endif
@@ -792,8 +764,8 @@ exercices_notes_aleatoire proc
    
    .else
      
-	; clef fa
-	mov eax, endc.code_midi_min_clef_2
+    ; clef fa
+    mov eax, endc.code_midi_min_clef_2
     add eax, valeur_aleatoire
     mov note_midi_aleatoire, eax 
 
@@ -881,17 +853,9 @@ exercices_notes_aleatoire endp
 exercices_notes_dlg_gestion_reponse proc nb_events:dword, buffer_event:dword
 
  LOCAL t_event:dword
- ; LOCAL tmp_code_touche:dword
  LOCAL p_event:dword
  LOCAL la_note_appuyee:dword
-  
-  
- ;mov eax, endc.nb_notes
- ;.if endc.numero_temps >= eax
- ; ret
- ;.endif
-  
-  
+    
  assume eax:ptr midi_buffer_event
  
  mov eax, buffer_event
@@ -899,14 +863,8 @@ exercices_notes_dlg_gestion_reponse proc nb_events:dword, buffer_event:dword
   
  @event_suivant:
 
-  
- ;mov edx, [eax].code_touche
- ;mov tmp_code_touche, edx
  mov edx, [eax].type_event
  mov t_event, edx
-   
- 
-  
    
   
  ; gérer seulement les touches appuyées
@@ -973,7 +931,7 @@ exercices_notes_dlg_gestion_reponse proc nb_events:dword, buffer_event:dword
  
    .if endc.numero_temps < eax
     
-	; mettre à jour le numéro du temps courant
+    ; mettre à jour le numéro du temps courant
     invoke exercice_notes_dlg_maj_score	
 	 
     jmp @temps_suivant
@@ -983,9 +941,9 @@ exercices_notes_dlg_gestion_reponse proc nb_events:dword, buffer_event:dword
    
     ; mettre à jour l'affichage sans éffacer l'arrière plan
     invoke partition_widget_maj_affichage, 0	
-	invoke exercice_notes_dlg_maj_score
+    invoke exercice_notes_dlg_maj_score
     invoke exercice_notes_dlg_stop
-	ret
+    ret
    .endif
   
  .endif ; t_event == MIDI_TOUCHE_APPUYEE

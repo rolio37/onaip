@@ -249,7 +249,7 @@ partition_widget_proc proc hWnd:HWND, uMsg:UINT, wParam:WPARAM, lParam:LPARAM
  ; utile pour supprimer le son "bell" à l'appuie d'une touche quand la fenêtre à le focus 
  .ELSEIF uMsg == WM_GETDLGCODE 
   
-  mov eax, DLGC_WANTALLKEYS; DLGC_WANTCHARS
+  mov eax, DLGC_WANTALLKEYS
   ret  
  ; ********************************************
  
@@ -311,10 +311,6 @@ partition_widget_proc proc hWnd:HWND, uMsg:UINT, wParam:WPARAM, lParam:LPARAM
    invoke partition_widget_souris_scrolling, wParam, lParam
    ret
  
- ;.ELSEIF uMsg == WM_LBUTTONUP
-   
-   
- 
  .ELSE
  
   invoke DefWindowProc, hWnd, uMsg, wParam, lParam
@@ -360,16 +356,7 @@ partition_widget_dessine_partition proc
  
  invoke SetViewportExtEx, hdc, ptwi.rect_dessin.left, ptwi.rect_dessin.top, NULL 
 
-
- ; *******************************************************************************
- ; rectangle rouge de debug du scrolling
- ;invoke CreatePen, PS_SOLID, 2, 0FFh
- ;invoke SelectObject, ptwi.hdc_zoom_x1, eax
- ;invoke Rectangle, ptwi.hdc_zoom_x1, 0, 0, ptwi.bitmap_x_max, ptwi.bitmap_y_max 
- ; *******************************************************************************
- 
   
- 
  ; pas de modification de la partition, donc simple affichage/recadrage
  .if ptwi.flag_dessine_bitmap_zoom == 1
    
@@ -394,7 +381,6 @@ partition_widget_dessine_partition proc
  
  
  ; dessin final de l'ensemble visible
- ; invoke BitBlt, hdc, 0, 0, ptwi.rect_dessin.right, ptwi.rect_dessin.bottom, ptwi.hdc_zoom_affichage, s_info_hx.nPos, s_info_vy.nPos, SRCCOPY
  invoke BitBlt, hdc, 0, 0, ptwi.rect_dessin.right, ptwi.rect_dessin.bottom, ptwi.hdc_zoom_x1, s_info_hx.nPos, s_info_vy.nPos, SRCCOPY
 
  
@@ -511,7 +497,6 @@ partition_widget_init proc
 
  
  ; par défaut l'autoscrolling est activé
- ; mov ptwi.flag_autoscrolling, 1
  invoke partition_widget_fixe_auto_scrolling, 1
  
  ; définir la portée de la partition et sa mise en page par défaut
@@ -549,8 +534,6 @@ partition_widget_def proc m_portee:dword, clef1:dword, clef2:dword, nb_notes_por
  
  ; TMP PAS D'ARMATURE
  mov ptwi.armature_type, ARMATURE_NATURELLE
- ; TMP PAS D'ARMATURE
- 
   
  invoke partition_widget_bitmap_zoom_x1_alloc
  
@@ -1329,7 +1312,6 @@ partition_widget_dessine_portees proc hdc:dword
    add edx, eax
    mov ecx, trace_y
    sub ecx, ptwi.ecart_accolade_clef_sol_y
-   ;sub trace_y, eax
    invoke StretchBlt, ptwi.hdc_zoom_x1, edx, ecx, ptwi.bitmap_clef_sol_x_max, ptwi.bitmap_clef_sol_y_max, hdc_clef_sol, 0, 0, CLEF_SOL_BMP_X_MAX, CLEF_SOL_BMP_Y_MAX, SRCCOPY
   
   .else
@@ -1356,7 +1338,6 @@ partition_widget_dessine_portees proc hdc:dword
    add edx, eax
    mov ecx, trace_y
    add ecx, ptwi.ecart_clef_sol
-   ;sub trace_y, eax
    invoke StretchBlt, ptwi.hdc_zoom_x1, edx, ecx, ptwi.bitmap_clef_sol_x_max, ptwi.bitmap_clef_sol_y_max, hdc_clef_sol, 0, 0, CLEF_SOL_BMP_X_MAX, CLEF_SOL_BMP_Y_MAX, SRCCOPY
   
   .else
@@ -1406,7 +1387,6 @@ partition_widget_dessine_portees proc hdc:dword
   invoke partition_widget_trace_rectangle, ptwi.hdc_zoom_x1, 0, 2, tmp_x1, tmp_y1, tmp_x2, tmp_y2
   
   mov eax, ptwi.ecart_interligne
-  ; add tmp_y1, eax
   sub tmp_y2, eax
     
   
@@ -1663,10 +1643,7 @@ partition_widget_dessine_notes proc
   
  ; retour en debut de ligne 
  mov eax, note_min_x
- mov trace_x, eax
- ;mov eax, note_min_y
- ;mov trace_y, eax
-    
+ mov trace_x, eax   
   
  ; **************************** 
  ; 2ème imbrication
@@ -2250,7 +2227,6 @@ partition_widget_dessine_une_note proc hdc:dword, trace_x:dword, trace_y:dword, 
   mov eax, trace_x
   add eax, ptwi.note_x
   sub eax, ptwi.note_correction_x
-  ;dec eax ; note plus proche de la hampe -1
   mov note_x1, eax
   sub eax, ptwi.note_x
   mov note_x2, eax
@@ -2399,8 +2375,6 @@ partition_widget_dessine_ligne_sup proc hdc:dword, trace_x:dword, trace_y:dword
  mov eax, trace_x
  add eax, ptwi.note_x
  add eax, ptwi.ligne_sup_x
- ; add eax, ptwi.note_x
- ; add eax,  50
  
  invoke MoveToEx, hdc, eax, trace_y, NULL
  
@@ -2408,10 +2382,6 @@ partition_widget_dessine_ligne_sup proc hdc:dword, trace_x:dword, trace_y:dword
  mov eax, trace_x
  sub eax, ptwi.note_x
  sub eax, ptwi.ligne_sup_x
- ;mov ecx, ptwi.note_x
- ;shr ecx, 1
- ;sub eax, ecx
- ; sub eax, ptwi.note_x
  
  invoke LineTo, hdc, eax, trace_y
  
@@ -2473,8 +2443,6 @@ partition_widget_zoom proc pourcentage:dword, sens:dword
  ; nouveau zoom
  mov ptwi.zoom_partition, eax
 
- 
- ;invoke partition_widget_bitmap_zoom_affichage_alloc
  invoke partition_widget_bitmap_zoom_x1_alloc
     
  invoke partition_widget_resize
@@ -2709,9 +2677,7 @@ partition_widget_maj_affichage proc efface_arriere_plan:dword
  ; 1 = éfface l'arrière plan avec la couleur wc.hbrBackground
  ; 0 = n'éfface pas
  invoke InvalidateRect, ptwi.hwnd, NULL, efface_arriere_plan
- 
- ; invoke RedrawWindow, ptwi.hwnd, 
- 
+  
  ret
 
 partition_widget_maj_affichage endp
@@ -2875,9 +2841,6 @@ partition_widget_auto_scroll_temps proc temps:dword
   xor edx, edx
   mov eax, ptwi.bitmap_x_max
   mov ecx, ptwi.notes_par_portee ; s_info_hx.nMax
-  ; sub ecx, s_info_hx.nMin 
-  ;inc ecx
-  ; shr ecx, 1
   add ecx, 4
   
   div ecx  ; eax = nb déplacements horizontaux par temps

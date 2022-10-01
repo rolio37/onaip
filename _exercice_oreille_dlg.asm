@@ -54,7 +54,7 @@ INCLUDE inc\onaip.inc
 				 "130", 0, \
 				 "140", 0, \
 				 "150", 0
- _c_nb_note byte "160", 0, \   ; ligne trop longue pour l'assembleur (trop complex ) , rajout d'un pseudo label inutilisé, la bonne blague :)
+ _c_nb_note byte "160", 0, \   ; ligne trop longue pour l'assembleur (trop complex ) , rajout d'un label inutilisé
 				 "170", 0, \
 				 "180", 0, \
 				 "190", 0, \
@@ -205,19 +205,18 @@ exercice_oreille_dlg_proc proc hWnd:HWND, uMsg:UINT, wParam:WPARAM, lParam:LPARA
    
     invoke SendMessage, eodc.h_idlb_nuance, CB_GETCURSEL, NULL, NULL
     
-	; calculer valeur de la nuance correspondante
-	; eax = index
-    mov ecx, 4
-	mul ecx
-	add eax, offset nuances_table_valeur
-	mov eax, [eax]
-	mov eodc.nuance, eax
+   ; calculer valeur de la nuance correspondante
+   mov ecx, 4
+   mul ecx
+   add eax, offset nuances_table_valeur
+   mov eax, [eax]
+   mov eodc.nuance, eax
 	 
-    invoke midi_out_vitesse, eax	 
+   invoke midi_out_vitesse, eax	 
 	  
-    ret
+   ret
    
-   .endif
+  .endif
    
    
    ; le changement du nombre d'octave n'implique pas une mise à jour de la partition 
@@ -395,8 +394,6 @@ exercice_oreille_dlg_init proc
  ; ****************************************************
  
  
- 
- ; configuration par défaut pour les débutants comme moi :)
  ; clef sol et fa, 1 portées, 20 notes, 1 octave, aucune altérations 
  invoke SendMessage, eodc.h_idlb_type_partition, CB_SETCURSEL, 0, NULL
  invoke SendMessage, eodc.h_idlb_nb_portees, CB_SETCURSEL, 0, NULL
@@ -589,20 +586,15 @@ exercice_oreille_dlg_go proc
   
   .if eodc.clef1 == CLEF_SOL
    mov eodc.code_midi_min_clef_1, 3Ch
-   ;mov eodc.touche_max_clef_1, 12
   .else
    mov eodc.code_midi_min_clef_1, 30h
-   ;mov eodc.touche_max_clef_1, 12
   .endif  
  
  
   .if eodc.clef2 == CLEF_SOL
    mov eodc.code_midi_min_clef_2, 3Ch
-   ;mov eodc.touche_max_clef_2, 12
-  
   .elseif eodc.clef2 == CLEF_FA
    mov eodc.code_midi_min_clef_2, 30h
-   ;mov eodc.touche_max_clef_2, 12
   .endif
  
  
@@ -613,20 +605,15 @@ exercice_oreille_dlg_go proc
   
   .if eodc.clef1 == CLEF_SOL
    mov eodc.code_midi_min_clef_1, 3Ch
-   ;mov eodc.touche_max_clef_1, 24
   .else
    mov eodc.code_midi_min_clef_1, 24h
-   ;mov eodc.touche_max_clef_1, 24
   .endif  
  
  
   .if eodc.clef2 == CLEF_SOL
    mov eodc.code_midi_min_clef_2, 3Ch
-   ;mov eodc.touche_max_clef_2, 24
-  
   .elseif eodc.clef2 == CLEF_FA
    mov eodc.code_midi_min_clef_2, 24h
-   ;mov eodc.touche_max_clef_2, 24
   .endif
  
  
@@ -637,20 +624,15 @@ exercice_oreille_dlg_go proc
   
   .if eodc.clef1 == CLEF_SOL
    mov eodc.code_midi_min_clef_1, 3Ch
-   ;mov eodc.touche_max_clef_1, 36
   .else
    mov eodc.code_midi_min_clef_1, 18h
-   ;mov eodc.touche_max_clef_1, 36
   .endif  
  
  
   .if eodc.clef2 == CLEF_SOL
    mov eodc.code_midi_min_clef_2, 3Ch
-   ;mov eodc.touche_max_clef_2, 36
-  
   .elseif eodc.clef2 == CLEF_FA
    mov eodc.code_midi_min_clef_2, 18h
-   ;mov eodc.touche_max_clef_2, 36
   .endif
  
  
@@ -661,20 +643,15 @@ exercice_oreille_dlg_go proc
   
   .if eodc.clef1 == CLEF_SOL
    mov eodc.code_midi_min_clef_1, 30h
-   ;mov eodc.touche_max_clef_1, 48
   .else
    mov eodc.code_midi_min_clef_1, 18h
-   ;mov eodc.touche_max_clef_1, 48
   .endif  
  
  
   .if eodc.clef2 == CLEF_SOL
    mov eodc.code_midi_min_clef_2, 30h
-   ;mov eodc.touche_max_clef_2, 48
-  
   .elseif eodc.clef2 == CLEF_FA
    mov eodc.code_midi_min_clef_2, 18h
-   ;mov eodc.touche_max_clef_2, 48
   .endif
  
  .endif
@@ -735,13 +712,11 @@ exercice_oreille_dlg_stop endp
 exercices_oreille_aleatoire proc
 
  LOCAL valeur_aleatoire:dword
- ; LOCAL note_midi_aleatoire:dword
  LOCAL sts:SYSTEMTIME
  
  
  
  ; aléatoire
- ; invoke GetTickCount
  invoke GetSystemTime, addr sts
  xor ecx, ecx
  mov cx, sts.wMilliseconds
@@ -979,7 +954,7 @@ exercices_oreille_dlg_gestion_reponse proc nb_events:dword, buffer_event:dword
  
    .if eodc.numero_temps < eax
     
-	; mettre à jour le numéro du temps courant
+    ; mettre à jour le numéro du temps courant
     invoke exercice_oreille_dlg_maj_score	
 	 
     jmp @temps_suivant

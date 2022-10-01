@@ -64,7 +64,6 @@ piano_widget_class_register proc
  mov wc.hbrBackground, COLOR_WINDOW
  mov wc.lpszMenuName, NULL
  mov wc.lpszClassName, offset piano_widget_class_name
- ;invoke LoadIcon, NULL, IDI_APPLICATION
  mov wc.hIcon, 0
  mov wc.hIconSm, 0
  invoke LoadCursor, NULL, IDC_ARROW
@@ -207,7 +206,6 @@ piano_widget_dessine_piano proc
 
  LOCAL hdc:dword
  LOCAL ps:PAINTSTRUCT
- ; LOCAL hbitmap:dword
  LOCAL hmem_dc:dword
  LOCAL rect1:RECT
  
@@ -216,28 +214,8 @@ piano_widget_dessine_piano proc
  mov hdc, eax
  
  invoke SetMapMode, hdc, MM_ANISOTROPIC
- ;invoke SetMapMode, hdc, MM_ISOTROPIC
- 
- ;invoke GetClientRect, hWnd, addr rect1
- 
- ;invoke SetWindowOrgEx, hdc, rect1.left, rect1.top, NULL
- ;invoke SetWindowExtEx, hdc, rect1.right, rect1.bottom, NULL
  
  invoke GetClientRect, pwi.hwnd, addr rect1
- ; invoke SetViewportOrgEx, hdc, rect1.left, rect1.top, NULL
- ; invoke SetViewportExtEx, hdc, rect1.right, rect1.bottom, NULL
- 
- ;xor edx, edx
- ; mov eax, rect1.right
- ;mov ecx, PIANO88_BMP_X_MAX
- ;div ecx
- 
- ; mov odc.zoom_piano, eax
- 
- ;.if eax == 0
- ; inc eax
- ;.endif
- 
 
  xor edx, edx
  mov eax, rect1.right
@@ -265,24 +243,14 @@ piano_widget_dessine_piano proc
 
  invoke SetViewportExtEx, hdc, pwi.zoom_piano, pwi.zoom_piano, NULL 
  
- 
- ; invoke SetViewportExtEx, hdc, 415, 33, NULL
- 
  invoke CreateCompatibleDC, hdc
  mov hmem_dc, eax
  
  invoke SelectObject, hmem_dc, pwi.h_bitmap_piano 
-  
- 
-  
- 
  
  invoke BitBlt, hdc, 0, 0, PIANO88_BMP_X_MAX, PIANO88_BMP_Y_MAX, hmem_dc, 0, 0, SRCCOPY
- ; invoke StretchBlt, hdc, 10, 90, 830, 66, hmem_dc, 10, 90, 415, 33, SRCCOPY
   
- 
  invoke DeleteDC, hmem_dc
- 
  
  invoke EndPaint, pwi.hwnd, addr ps
  
@@ -303,7 +271,6 @@ piano_widget_init proc
  LOCAL piano_x_max:dword
  LOCAL piano_y_max:dword
  LOCAL h_bitmap_piano_midi:dword
- ; LOCAL h_bitmap_piano:dword
  
  
  invoke GetDC, pwi.hwnd
@@ -372,8 +339,6 @@ piano_widget_init proc
  .endif  
  ; ******************************************* 
     
- 
- ; invoke DeleteObject, pwi.h_bitmap_piano_midi
  invoke DeleteObject, h_bitmap_piano_midi
  invoke DeleteDC, hmem_dc
  invoke ReleaseDC, pwi.hwnd, hdc

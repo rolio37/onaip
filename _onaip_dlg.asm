@@ -153,20 +153,6 @@ onaip_dlg_proc proc hWnd:HWND, uMsg:UINT, wParam:WPARAM, lParam:LPARAM
   ; ************************************************************************************************
  .ELSEIF uMsg == WM_SIZE
   
-  ;invoke GetClientRect, hWnd, addr rect1
-  
-
-  ; taille minimum de la fenêtre x
-  ;.if rect1.right < PIANO_DLG_MIN_X-1
-  ; invoke SetWindowPos, hWnd, HWND_TOP, 0, 0, PIANO_DLG_MIN_X, rect1.bottom, SWP_NOMOVE
-  ;.endif
-  
-  ; taille minimum de la fenêtre y
-  ;.if rect1.bottom < PIANO_DLG_MIN_Y-1
-  ; invoke SetWindowPos, hWnd, HWND_TOP, 0, 0, rect1.right, PIANO_DLG_MIN_Y, SWP_NOMOVE
-  ;.endif
-  
-    
   invoke GetClientRect, hWnd, addr rect1
   sub rect1.right, PIANO_PADDING_X
   sub rect1.bottom, PIANO_PADDING_Y
@@ -537,25 +523,8 @@ onaip_dlg_open_midi_in proc
 
  invoke midi_in_ouvrir, eax
 
- ;.if eax != 0
- 
-  
-  ;invoke MessageBox, odc.hwnd, addr ErrMsgMidiIn, addr ErrMsgMidi, MB_YESNO or MB_ICONQUESTION
- 
-  ;.if eax == IDYES
-  ; invoke onaip_dlg_menu_midi_actualiser
-  ;.endif
-  
-  ;ret
-  ; invoke GetLastError
- ;.endif
- 
- 
  ; le périphérique midi in a changé, relancer la capture de la fenêtre concernée
  .if odc.hwnd_exercice == 0
- 
-  ; partition en mode libre
-  ; invoke PostMessage, odc.hwnd, WM_PARTITION_LIBRE, NULL, NULL
   
   ; relancer la capture
   invoke midi_in_start_capture, 1, 0, odc.hwnd
@@ -583,15 +552,6 @@ onaip_dlg_open_midi_out proc
 
  invoke midi_out_ouvrir, eax
 
- ;.if eax != 0
- ; invoke MessageBox, odc.hwnd, addr ErrMsgMidiOut, addr ErrMsgMidi, MB_YESNO or MB_ICONQUESTION
-  
- ; .if eax == IDYES
- ;  invoke onaip_dlg_menu_midi_actualiser
- ; .endif
-  
- ;.endif
- 
  ret
 
 onaip_dlg_open_midi_out endp
@@ -682,7 +642,6 @@ onaip_dlg_maj_midi_out_etat proc
  
   invoke onaip_dlg_open_midi_out
   invoke EnableWindow, odc.h_idcb_midi_out, 1
-  ; invoke EnableWindow, odc.h_idck_midi_port_out, 1
   invoke EnableWindow, odc.h_idcb_midi_port_out, 1
   
  .else
@@ -738,7 +697,6 @@ onaip_dlg_gestion_partition_mode_libre proc nb_events:dword, buffer_event:dword
  .if index_temps >= 20
   ; reset des notes
   invoke partition_widget_notes_reset
-  ; invoke partition_widget_maj_affichage, 0
   mov index_temps, 0
  .endif	 
 	 
@@ -852,9 +810,6 @@ onaip_dlg_menu_partition_autoscrolling proc
   
   ; désactiver le défilement automatique
   invoke partition_widget_fixe_auto_scrolling, 0
-  
-  
-  
  
  .else
  

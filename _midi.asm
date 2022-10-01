@@ -439,11 +439,6 @@ midi_in_start_capture proc nb_touche_appuyee:DWORD, nb_touche_relachee:DWORD, hw
   ; commencer la capture des données
   invoke midiInStart, h_midi_in
  .endif
-
- 
- 
- ; déverrouiller le vérrou
- ; invoke midi_mutex_unlock
  
  ret
  
@@ -550,7 +545,6 @@ midi_in_gestion_buffer_event proc midi_message:DWORD, temps:DWORD
    .if port_midi_in != edx
     ; prendre ou attendre la libération du vérrou
     jmp @mutex_unlock
-	; ret
    .endif
   
   .endif
@@ -567,7 +561,6 @@ midi_in_gestion_buffer_event proc midi_message:DWORD, temps:DWORD
   .else
    ; code touche incorrect
    jmp @mutex_unlock
-   ; ret
   .endif  
   
   ; isoler la vitesse
@@ -580,7 +573,6 @@ midi_in_gestion_buffer_event proc midi_message:DWORD, temps:DWORD
   .else
    ; vitesse incorrect
    jmp @mutex_unlock
-   ; ret
   .endif
   
   
